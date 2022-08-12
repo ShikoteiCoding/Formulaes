@@ -39,25 +39,27 @@ def loan_monthly_table(amount: int, month_duration: int, yearly_rate: float) -> 
     return _recursive_loan_monthly(amount, [])
 
 def dividend_investment_table(
-    initial_deposit: int,
-    dividend_yearly_increase: float,
-    stock_expected_growth: float,
-    dividend_yield: float,
-    yearly_investiment: int,
-    holding_duration: int,
-    dividend_tax_rate: float,
-    drip: bool
+        initial_deposit: int,
+        dividend_yearly_increase: float,
+        stock_expected_growth: float,
+        dividend_yield: float,
+        yearly_investment: int,
+        holding_duration_year: int,
+        dividend_tax_rate: float,
+        drip: bool
     ): 
     """
     :param initial_deposit: Initial deposit amount
     :param dividend_yearly_increase: Dividend year over year increase
     :param stock_expected_growth: Stock growth
     :param dividend_yield: Stock yearly returns as a dividend payment
-    :param yearly_investiment: Total invested per year
+    :param yearly_investment: Total invested per year
     :param holding_duration_year: Total number of year to compute stats
     :param dividend_tax_rate: Yearly tax rate on "plus-value" returns
     :param drip: 
     """
+    yearly_flat = (initial_deposit + yearly_investment)
+    yearly_gain = yearly_flat * (1 + dividend_yield)
+    end_balance = yearly_gain + (yearly_gain - yearly_flat) * dividend_tax_rate
 
-
-    return end_balance, total_return, avg_yearly_return, yearly_dividend_income, total_dividend_payment, yield_on_cost
+    return end_balance#, total_return, avg_yearly_return, yearly_dividend_income, total_dividend_payment, yield_on_cost
