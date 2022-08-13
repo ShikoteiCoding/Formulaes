@@ -58,25 +58,27 @@ def dividend_investment_table(
     :param dividend_tax_rate: Yearly tax rate on "plus-value" returns
     :param drip: 
     """
-    end_balance = initial_capital
-    end_dividend = 0
-
-    def one_year(initial_capital, dividend_increase):
-        current_year_capital = initial_capital
-        current_year_yield = dividend_yield * (1 + dividend_increase)
-        current_year_dividend = initial_capital * current_year_yield
-        current_year_taxes = current_year_dividend * dividend_tax_rate
-        current_year_contribution = annual_contribution # Current year contribution does not produce dividend or growth before next year
-        end_year_dividend_value = current_year_dividend  - current_year_taxes
-        end_year_capital = current_year_capital * (1 + position_expected_annual_growth)
-        end_year_dividend = current_year_dividend
+    def _recursive_one_year(year, start_year_capital, start_year_yield, start_year_contribution, table):
         
-        return end_year_capital + (end_year_dividend_value if drip else 0) + current_year_contribution, end_year_dividend
-    
-    for i in range(holding_duration_year):
-        dividend_increase = 0 if i == 0 else dividend_annual_increase
-        curr_year_balance, curr_year_dividend = one_year(end_balance, dividend_increase)
-        end_balance = curr_year_balance
-        end_dividend += curr_year_dividend
+        current_year_dividend = start_year_capital * start_year_yield
+        current_year_taxes = current_year_dividend * dividend_tax_rate
+        current_year_dividend_after_taxes = current_year_dividend  - current_year_taxes
 
-    return end_balance, end_dividend
+        end_year_capital = start_year_capital * (1 + position_expected_annual_growth)
+        end_year_dividend = current_year_dividend
+        end_year_contribution = ((current_year_dividend_after_taxes if drip else 0) + start_year_contribution)
+        end_year_balance = end_year_capital + end_year_contribution
+        end_year_yield = start_year_yield * (1 + dividend_annual_increase - position_expected_annual_growth)
+        
+        if year == holding_duration_year:
+            return table + [(year, start_year_capital, start_year_yield, start_year_capital, end_year_dividend, end_year_balance)]
+
+        return _recursive_one_year(
+            year + 1,
+            end_year_balance,
+            end_year_yield,
+            end_year_contribution,
+            table + [(year, start_year_capital, start_year_yield, start_year_capital, end_year_dividend, end_year_balance)]
+        )
+
+    return _recursive_one_year(1, initial_capital, dividend_yield, annual_contribution, [("Year", "Capital", "Yield", "Contribution", "Annual Dividend", "New Balance")])
