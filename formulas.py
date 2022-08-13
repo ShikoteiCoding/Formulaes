@@ -39,27 +39,44 @@ def loan_monthly_table(amount: int, month_duration: int, yearly_rate: float) -> 
     return _recursive_loan_monthly(amount, [])
 
 def dividend_investment_table(
-        initial_deposit: int,
-        dividend_yearly_increase: float,
-        stock_expected_growth: float,
+        initial_capital: int,
+        dividend_annual_increase: float,
+        position_expected_annual_growth: float,
         dividend_yield: float,
-        yearly_investment: int,
+        annual_contribution: int,
         holding_duration_year: int,
         dividend_tax_rate: float,
         drip: bool
     ): 
     """
     :param initial_deposit: Initial deposit amount
-    :param dividend_yearly_increase: Dividend year over year increase
-    :param stock_expected_growth: Stock growth
+    :param dividend_annual_increase: Dividend year over year increase
+    :param position_expected_annual_growth: Stock growth
     :param dividend_yield: Stock yearly returns as a dividend payment
     :param yearly_investment: Total invested per year
     :param holding_duration_year: Total number of year to compute stats
     :param dividend_tax_rate: Yearly tax rate on "plus-value" returns
     :param drip: 
     """
-    yearly_flat = (initial_deposit + yearly_investment)
-    yearly_gain = yearly_flat * (1 + dividend_yield)
-    end_balance = yearly_gain + (yearly_gain - yearly_flat) * dividend_tax_rate
+    end_balance = initial_capital
+    end_dividend = 0
 
-    return end_balance#, total_return, avg_yearly_return, yearly_dividend_income, total_dividend_payment, yield_on_cost
+    def one_year(initial_capital, dividend_increase):
+        current_year_capital = initial_capital
+        current_year_yield = dividend_yield * (1 + dividend_increase)
+        current_year_dividend = initial_capital * current_year_yield
+        current_year_taxes = current_year_dividend * dividend_tax_rate
+        current_year_contribution = annual_contribution # Current year contribution does not produce dividend or growth before next year
+        end_year_dividend_value = current_year_dividend  - current_year_taxes
+        end_year_capital = current_year_capital * (1 + position_expected_annual_growth)
+        end_year_dividend = current_year_dividend
+        
+        return end_year_capital + (end_year_dividend_value if drip else 0) + current_year_contribution, end_year_dividend
+    
+    for i in range(holding_duration_year):
+        dividend_increase = 0 if i == 0 else dividend_annual_increase
+        curr_year_balance, curr_year_dividend = one_year(end_balance, dividend_increase)
+        end_balance = curr_year_balance
+        end_dividend += curr_year_dividend
+
+    return end_balance, end_dividend
