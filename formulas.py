@@ -58,6 +58,12 @@ def dividend_investment_table(
     :param dividend_tax_rate: Yearly tax rate on "plus-value" returns
     :param drip: 
     """
+    dtype = [
+        ("year", np.int_), ("principal", np.float_), ("dividend", np.float_), ("yield", np.float_),
+        ("principal_with_drip", np.float_), ("principal_increase", np.float_),
+        ("annual_contribution", np.int_), ("new_balance", np.float_), ("cumulative_dividends", np.float_)
+    ]
+
     def _recursive_one_year(year, principal, annual_yield, cumulative_dividend, table):
         
         annual_dividend = principal * annual_yield
@@ -68,7 +74,7 @@ def dividend_investment_table(
 
         new_balance = principal_after_drip + principal_increase + annual_contribution
 
-        stats = [(
+        stats = np.array([(
             year,
             principal,
             annual_dividend,
@@ -78,17 +84,19 @@ def dividend_investment_table(
             annual_contribution,
             new_balance,
             (cumulative_dividend + annual_dividend)
-        )]
+        )], dtype=dtype)
+
+        new_table = np.append(table, stats)
         
         if year == holding_duration_year:
-            return table + stats
+            return new_table
 
         return _recursive_one_year(
             year + 1,
             new_balance,
             annual_yield * (1 + dividend_annual_increase - position_expected_annual_growth),
             cumulative_dividend + annual_dividend,
-            table + stats
+            new_table
         )
 
-    return _recursive_one_year(1, initial_capital, dividend_yield, 0, [("year", "principal", "dividend", "yield", "principal_with_drip", "principal_increase", "annual_contribution", "new_balance", "cumulative_dividends")])
+    return _recursive_one_year(1, initial_capital, dividend_yield, 0, np.empty((0, len(dtype)), dtype=dtype))

@@ -4,6 +4,7 @@ from formulas import (
 
 import pprint
 import pandas as pd
+import numpy as np
 
 
 if __name__ == "__main__":
@@ -24,4 +25,4 @@ if __name__ == "__main__":
         drip=True
     )
 
-    print(pd.DataFrame.from_records(result))
+    print(pd.DataFrame.from_records(result, index=["year"]))
