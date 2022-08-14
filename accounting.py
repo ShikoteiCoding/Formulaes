@@ -1,6 +1,9 @@
-## Banking
 import numpy as np
 
+
+#########################################
+#####            Banking            #####
+#########################################
 def loan_total_cost_and_monthly_payment(amount: int, month_duration: int, yearly_rate: float) -> tuple[float, float]:
     """
     :param amount: total amount of the load
@@ -15,7 +18,7 @@ def loan_total_cost_and_monthly_payment(amount: int, month_duration: int, yearly
 
     return payment, payment * month_duration - amount
 
-def loan_monthly_table(amount: int, month_duration: int, yearly_rate: float) -> list[tuple[float, float, float, float]]:
+def loan_monthly_table(amount: int, month_duration: int, yearly_rate: float):
     """
     :param amount: total amount of the load
     :param month_duration: duration in month of the credit
@@ -23,30 +26,34 @@ def loan_monthly_table(amount: int, month_duration: int, yearly_rate: float) -> 
     """
 
     monthly_payment, _ = loan_total_cost_and_monthly_payment(amount, month_duration, yearly_rate)
-
     monthly_rate = yearly_rate / 12
 
-    def _recursive_loan_monthly(balance: float, table: list) -> list[tuple[float, float, float, float]]:
-        interest = balance * monthly_rate
-        principal = monthly_payment - interest
-        if balance < 0:
-            return table + [(0, monthly_payment, 0, amount)]
-        return _recursive_loan_monthly(
-            balance * (1 + monthly_rate) - monthly_payment,
-            table + [(balance, principal, interest, amount - balance)]
+    dtype = [("month", np.int_), ("balance", np.float_), ("principal", np.float_), ("interest", np.float_), ("end_balance", np.float_)]
+
+    def _recursive_loan_test(month):
+        if month == 1:
+            interest = amount * monthly_rate
+            return np.array([(month, amount, monthly_payment - interest, interest, amount - monthly_payment + interest)], dtype=dtype)
+        
+        table = _recursive_loan_test(month - 1)
+        prev = table[-1]
+        interest = prev["end_balance"] * monthly_rate
+        end_balance =  0 if prev["month"] == month_duration - 1 else prev["end_balance"] - monthly_payment + interest
+        return np.append(
+            table,
+            np.array([(prev["month"] + 1, prev["end_balance"], monthly_payment - interest, interest, end_balance)], dtype=dtype)
         )
 
-    return _recursive_loan_monthly(amount, [])
+    return _recursive_loan_test(month_duration)
 
+
+
+
+#########################################
+#####          Investment           #####
+#########################################
 def dividend_investment_table(
-        initial_capital: int,
-        dividend_annual_increase: float,
-        position_expected_annual_growth: float,
-        dividend_yield: float,
-        annual_contribution: int,
-        holding_duration_year: int,
-        dividend_tax_rate: float,
-        drip: bool
+        initial_capital: int, dividend_annual_increase: float, position_expected_annual_growth: float, dividend_yield: float, annual_contribution: int, holding_duration_year: int, dividend_tax_rate: float, drip: bool
     ): 
     """
     :param initial_capital: Initial deposit amount
