@@ -31,4 +31,4 @@ def dividend_table():
 
 if __name__ == "__main__":
 
-    loan_table()
+    dividend_table()
