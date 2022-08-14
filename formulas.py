@@ -58,27 +58,37 @@ def dividend_investment_table(
     :param dividend_tax_rate: Yearly tax rate on "plus-value" returns
     :param drip: 
     """
-    def _recursive_one_year(year, start_year_capital, start_year_yield, start_year_contribution, table):
+    def _recursive_one_year(year, principal, annual_yield, cumulative_dividend, table):
         
-        current_year_dividend = start_year_capital * start_year_yield
-        current_year_taxes = current_year_dividend * dividend_tax_rate
-        current_year_dividend_after_taxes = current_year_dividend  - current_year_taxes
+        annual_dividend = principal * annual_yield
+        dividend_taxes = annual_dividend * dividend_tax_rate
 
-        end_year_capital = start_year_capital * (1 + position_expected_annual_growth)
-        end_year_dividend = current_year_dividend
-        end_year_contribution = ((current_year_dividend_after_taxes if drip else 0) + start_year_contribution)
-        end_year_balance = end_year_capital + end_year_contribution
-        end_year_yield = start_year_yield * (1 + dividend_annual_increase - position_expected_annual_growth)
+        principal_after_drip = principal + (annual_dividend  - dividend_taxes if drip else 0)
+        principal_increase = principal * position_expected_annual_growth
+
+        new_balance = principal_after_drip + principal_increase + annual_contribution
+
+        stats = [(
+            year,
+            "%.2f"%principal,
+            "%.2f"%annual_dividend,
+            "%.2f"%(annual_yield*100),
+            "%.2f"%principal_after_drip,
+            "%.2f"%principal_increase,
+            "%.2f"%annual_contribution,
+            "%.2f"%new_balance,
+            "%.2f"%(cumulative_dividend + annual_dividend)
+        )]
         
         if year == holding_duration_year:
-            return table + [(year, start_year_capital, start_year_yield, start_year_capital, end_year_dividend, end_year_balance)]
+            return table + stats
 
         return _recursive_one_year(
             year + 1,
-            end_year_balance,
-            end_year_yield,
-            end_year_contribution,
-            table + [(year, start_year_capital, start_year_yield, start_year_capital, end_year_dividend, end_year_balance)]
+            new_balance,
+            annual_yield * (1 + dividend_annual_increase - position_expected_annual_growth),
+            cumulative_dividend + annual_dividend,
+            table + stats
         )
 
-    return _recursive_one_year(1, initial_capital, dividend_yield, annual_contribution, [("Year", "Capital", "Yield", "Contribution", "Annual Dividend", "New Balance")])
+    return _recursive_one_year(1, initial_capital, dividend_yield, 0, [("year", "principal", "dividend", "yield", "principal_with_drip", "principal_increase", "annual_contribution", "new_balance", "cumulative_dividends")])

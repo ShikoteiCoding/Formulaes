@@ -8,7 +8,7 @@ if __name__ == "__main__":
     #mensuality, cost = loan_total_cost_and_monthly_payment(120_000, 120, 0.07)
     #table = loan_monthly_table(50_000, 180, 0.01)
 
-    pp = pprint.PrettyPrinter(indent=4, width=200)
+    pp = pprint.PrettyPrinter(indent=4, width=200, underscore_numbers=True)
 
     result = dividend_investment_table(
         initial_capital=1_000,
