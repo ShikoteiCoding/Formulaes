@@ -1,6 +1,9 @@
-from formulas import loan_total_cost_and_monthly_payment, loan_monthly_table, dividend_investment_table
+from formulas import (
+    loan_total_cost_and_monthly_payment, loan_monthly_table, dividend_investment_table
+)
 
 import pprint
+import pandas as pd
 
 
 if __name__ == "__main__":
@@ -21,4 +24,4 @@ if __name__ == "__main__":
         drip=True
     )
 
-    pp.pprint(result)
+    print(pd.DataFrame.from_records(result))

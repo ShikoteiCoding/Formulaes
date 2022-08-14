@@ -1,5 +1,5 @@
 ## Banking
-from calendar import month
+import numpy as np
 
 def loan_total_cost_and_monthly_payment(amount: int, month_duration: int, yearly_rate: float) -> tuple[float, float]:
     """
@@ -70,14 +70,14 @@ def dividend_investment_table(
 
         stats = [(
             year,
-            "%.2f"%principal,
-            "%.2f"%annual_dividend,
-            "%.2f"%(annual_yield*100),
-            "%.2f"%principal_after_drip,
-            "%.2f"%principal_increase,
-            "%.2f"%annual_contribution,
-            "%.2f"%new_balance,
-            "%.2f"%(cumulative_dividend + annual_dividend)
+            principal,
+            annual_dividend,
+            (annual_yield*100),
+            principal_after_drip,
+            principal_increase,
+            annual_contribution,
+            new_balance,
+            (cumulative_dividend + annual_dividend)
         )]
         
         if year == holding_duration_year:
