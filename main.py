@@ -6,13 +6,18 @@ import pprint
 import pandas as pd
 import numpy as np
 
+def test_recursive():
+    def _test(max):
+        if max==0:
+            return [max]
+        else:
+            prev_row =  _test(max - 1)
+            print(prev_row)
+            return prev_row + [max]
 
-if __name__ == "__main__":
+    print(_test(10))
 
-    #mensuality, cost = loan_total_cost_and_monthly_payment(120_000, 120, 0.07)
-    #table = loan_monthly_table(50_000, 180, 0.01)
-
-    pp = pprint.PrettyPrinter(indent=4, width=200, underscore_numbers=True)
+def dividend_recursive():
 
     result = dividend_investment_table(
         initial_capital=1_000,
@@ -20,9 +25,18 @@ if __name__ == "__main__":
         dividend_annual_increase=0.02,
         position_expected_annual_growth=0.03,
         annual_contribution=12_000,
-        holding_duration_year=4,
+        holding_duration_year=40,
         dividend_tax_rate=0.3,
         drip=True
     )
+    print(result)
 
-    print(pd.DataFrame.from_records(result, index=["year"]))
+
+if __name__ == "__main__":
+
+    #mensuality, cost = loan_total_cost_and_monthly_payment(120_000, 120, 0.07)
+    #table = loan_monthly_table(50_000, 180, 0.01)
+
+    #rint(pd.DataFrame.from_records(result, index=["year"]))
+
+    dividend_recursive()
