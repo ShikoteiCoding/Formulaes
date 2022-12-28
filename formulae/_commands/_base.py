@@ -1,7 +1,10 @@
 from argparse import ArgumentParser
 from typing import Type, Callable, TypeVar
 
-commands: dict[str, Callable] = dict()
+
+# Store all commands
+COMMANDS: dict[str, Callable] = dict()
+# Type the commands as func
 T = TypeVar("T", bound=Callable)
 
 
@@ -9,5 +12,5 @@ def register(cmd: T) -> T:
     """
     Decorator to register a command in CLI.
     """
-    commands[cmd.__name__] = cmd
+    COMMANDS[cmd.__name__] = cmd
     return cmd
