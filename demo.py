@@ -1,4 +1,4 @@
-from accounting import (
+from formulae.accounting import (
     loan_total_cost_and_monthly_payment, loan_monthly_table, dividend_investment_table
 )
 
