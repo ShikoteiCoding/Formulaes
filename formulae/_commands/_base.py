@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from typing import Type, Callable, TypeVar
+from typing import Type, Callable, TypeVar, Any
 
 
 # Store all commands
@@ -14,3 +14,10 @@ def register(cmd: T) -> T:
     """
     COMMANDS[cmd.__name__] = cmd
     return cmd
+
+
+def run_wrapper(cmd: T, args: Any) -> int:
+    """
+    Wrapper to execute functions as command lines by passing args.
+    """
+    return cmd(args)
