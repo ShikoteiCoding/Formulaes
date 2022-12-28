@@ -3,7 +3,7 @@ import sys
 from argparse import ArgumentParser
 from typing import NoReturn, TextIO
 
-from ._commands import COMMANDS, run_wrapper
+from ._commands import COMMANDS, run_wrapper, parse_arguments_from_func
 
 
 def main(argv: list[str]) -> int:
@@ -11,15 +11,17 @@ def main(argv: list[str]) -> int:
     subparsers = parser.add_subparsers()
     parser.set_defaults(cmd=None)
 
+    # Dynamic instantiation of commands for CLI
     for name, cmd_func in COMMANDS.items():
         subparser = subparsers.add_parser(
             name=name
         )  # Set function name as the first argument
         subparser.set_defaults(cmd=cmd_func)
+        parse_arguments_from_func(subparser, cmd_func)
 
-    args = parser.parse_args(argv)
-
-    cmd_func = args.cmd
+    # Actual command execution. Get as dict
+    args = vars(parser.parse_args(argv))
+    cmd_func = args.pop('cmd')
 
     if cmd_func is None:
         return 1
