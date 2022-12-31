@@ -26,7 +26,8 @@ def main(argv: list[str]) -> int:
     if cmd_func is None:
         return 1
 
-    run_wrapper(cmd_func, args)
+    return run_wrapper(cmd_func, args)
+
 
 
 def entrypoint() -> NoReturn:
