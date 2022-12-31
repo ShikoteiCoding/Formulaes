@@ -6,11 +6,9 @@ import inspect
 
 # Store all commands
 COMMANDS: dict[str, Callable] = dict()
-# Type the commands as func
-T = TypeVar("T", bound=Callable)
 
 
-def register(cmd: T) -> T:
+def register(cmd: Callable) -> Callable:
     """
     Decorator to register a command in CLI.
     """
@@ -18,7 +16,7 @@ def register(cmd: T) -> T:
     return cmd
 
 
-def run_wrapper(cmd: T, args: dict) -> int:
+def run_wrapper(cmd: Callable, args: dict) -> int:
     """
     Wrapper to execute functions as command lines by passing args.
     """
