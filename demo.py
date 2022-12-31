@@ -1,10 +1,7 @@
-from formulae.banking import (
-    loan_total_cost_and_monthly_payment, loan_monthly_table, dividend_investment_table
-)
-
-import pprint
 import pandas as pd
-import numpy as np
+
+from formulae.loan import loan_monthly_table, loan_total_cost_and_monthly_payment
+from formulae.investment import dividend_investment_table
 
 def loan_table():
     result = loan_monthly_table(

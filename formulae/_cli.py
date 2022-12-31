@@ -21,13 +21,12 @@ def main(argv: list[str]) -> int:
 
     # Actual command execution. Get as dict
     args = vars(parser.parse_args(argv))
-    cmd_func = args.pop('cmd')
+    cmd_func = args.pop("cmd")
 
     if cmd_func is None:
         return 1
 
     return run_wrapper(cmd_func, args)
-
 
 
 def entrypoint() -> NoReturn:

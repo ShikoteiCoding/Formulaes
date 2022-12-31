@@ -28,4 +28,4 @@ def parse_arguments_from_func(parser: ArgumentParser, func: Callable):
     From a function signature, create dynamic arguments parser.
     """
     for arg in inspect.signature(func).parameters:
-        parser.add_argument(f'--{str(arg)}', required=True)
+        parser.add_argument(f"--{str(arg)}", required=True)
