@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from typing import Type, Callable, TypeVar, Any
+from typing import Callable
 
 import inspect
 
@@ -16,11 +16,11 @@ def register(cmd: Callable) -> Callable:
     return cmd
 
 
-def run_wrapper(cmd: Callable, args: dict) -> int:
+def run_wrapper(cmd: Callable, **kwargs: dict) -> int:
     """
     Wrapper to execute functions as command lines by passing args.
     """
-    return cmd(**args)
+    return cmd(**kwargs)
 
 
 def parse_arguments_from_func(parser: ArgumentParser, func: Callable):

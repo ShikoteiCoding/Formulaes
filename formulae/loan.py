@@ -46,7 +46,6 @@ def loan_monthly_table(amount: int, month_duration: int, yearly_rate: float):
     ]
 
     def _recursive_loan_test(month):
-
         if month == 1:
             interest = amount * monthly_rate
             return np.array(

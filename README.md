@@ -23,7 +23,7 @@ python3 -m formulae get_loan_total_cost_and_monthly_payment
 
 Example commands
 ```shell
-python3 -m formulae get_dividend_investment_table \ 
+python3 -m formulae get_dividend_investment_table \
     --initial_capital 100000 \
     --dividend_annual_increase 0.03 \
     --position_expected_annual_growth 0.03 \

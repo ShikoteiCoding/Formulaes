@@ -44,7 +44,6 @@ def dividend_investment_table(
     ]
 
     def _recursive_one_year(year):
-
         if year == 1:
             principal_after_drip = (
                 initial_capital * (1 + dividend_yield * (1 - dividend_tax_rate))

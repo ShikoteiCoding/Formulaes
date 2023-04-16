@@ -1,7 +1,7 @@
 import sys
 
 from argparse import ArgumentParser
-from typing import NoReturn, TextIO
+from typing import NoReturn
 
 from ._commands import COMMANDS, run_wrapper, parse_arguments_from_func
 
@@ -9,6 +9,7 @@ from ._commands import COMMANDS, run_wrapper, parse_arguments_from_func
 def main(argv: list[str]) -> int:
     parser = ArgumentParser("python3 -m formulae")
     subparsers = parser.add_subparsers()
+
     parser.set_defaults(cmd=None)
 
     # Dynamic instantiation of commands for CLI
@@ -26,7 +27,7 @@ def main(argv: list[str]) -> int:
     if cmd_func is None:
         return 1
 
-    return run_wrapper(cmd_func, args)
+    return run_wrapper(cmd_func, **args)
 
 
 def entrypoint() -> NoReturn:
