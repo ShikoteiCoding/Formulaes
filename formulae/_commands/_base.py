@@ -27,5 +27,9 @@ def parse_arguments_from_func(parser: ArgumentParser, func: Callable):
     """
     From a function signature, create dynamic arguments parser.
     """
-    for arg in inspect.signature(func).parameters:
-        parser.add_argument(f"--{str(arg)}", required=True)
+    signature = inspect.signature(func)
+    for k,v in signature.parameters.items():
+        if v is not inspect.Parameter.empty:
+            parser.add_argument(f"--{str(k)}", required=False, default=v.default, help=f"argument '{k}' default value is '{v}")
+        else:
+            parser.add_argument(f"--{str(k)}", required=True, default=v.default, help=f"argument '{k}' does not have default value. please provide.")

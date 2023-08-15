@@ -15,7 +15,7 @@ def main(argv: list[str]) -> int:
     # Dynamic instantiation of commands for CLI
     for name, cmd_func in COMMANDS.items():
         subparser = subparsers.add_parser(
-            name=name
+            name=name,
         )  # Set function name as the first argument
         subparser.set_defaults(cmd=cmd_func)
         parse_arguments_from_func(subparser, cmd_func)
